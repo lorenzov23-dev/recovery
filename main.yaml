@@ -1,0 +1,28 @@
+---
+- name: Install a bunch of packages based on the VM OS
+  hosts: vagrantbox
+  connection: ssh
+  become: true
+
+  vars:
+    ansible_ssh_user: vagrant 
+
+  vars_files:
+    - vars/general.yml
+
+  tasks:
+    - ping:
+    - name: Printing Fact Variables                                         
+      debug:                                                                
+        msg: "The value of OS Family is {{ansible_os_family}}"  
+
+    - name: Debian - Install Packages
+      apt:
+        name: "{{ pkg }}"
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: RedHat - Install Packages
+      debug:
+        msg: "RedHat"
+      when: ansible_os_family == "RedHat"
